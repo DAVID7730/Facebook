@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fakebook</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f2f5;
+        }
+
+        header {
+            background-color: #3b5998;
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .container {
+            width: 80%;
+            margin: auto;
+            max-width: 600px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin: 0;
+        }
+
+        input[type="text"], input[type="password"], textarea {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #555;
+        }
+        
+        .message {
+            margin-top: 10px;
+            color: red;
+        }
+
+        .post {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Fakebook</h1>
+    </header>
+    <div class="container">
+        <h2>Connectez-vous à Fakebook</h2>
+        <input type="text" id="username" placeholder="Email ou numéro de téléphone" required>
+        <input type="password" id="password" placeholder="Mot de passe" required>
+        <button id="loginButton">Se connecter</button>
+        <div id="message" class="message"></div>
+        
+        <div id="postSection" style="display:none;">
+            <h2>Créer un post</h2>
+            <textarea id="postContent" placeholder="Quoi de neuf ?" rows="4"></textarea>
+            <button id="postButton">Publier</button>
+            <h2>Posts</h2>
+            <div id="postsContainer"></div>
+            <button id="exportButton">Exporter les données</button>
+            <input type="file" id="importFile" style="display: none;" />
+            <button id="importButton">Importer les données</button>
+        </div>
+        
+        <div class="footer">
+            <p>Pas encore membre ? <a href="#">Inscrivez-vous</a></p>
+        </div>
+    </div>
+
+    <script>
+        function storeUserInfo(username, password) {
+            const user = { username, password };
+            localStorage.setItem('user', JSON.stringify(user));
+        }
+
+        function getUserInfo() {
+            return JSON.parse(localStorage.getItem('user'));
+        }
+
+        function storePost(content) {
+            const posts = getPosts();
+            posts.push(content);
+            localStorage.setItem('posts', JSON.stringify(posts));
+        }
+
+        function getPosts() {
+            const posts = localStorage.getItem('posts');
+             return posts ? JSON.parse(posts) : []; 
+        }
+
+        function displayPosts() {
+            const postsContainer = document.getElementById('postsContainer');
+            postsContainer.innerHTML = '';
+            const posts = getPosts();
+            posts.forEach(postContent => {
+                const postDiv = document.createElement('div');
+                postDiv.className = 'post';
+                postDiv.textContent = postContent;
+                postsContainer.prepend(postDiv);
+            });
+        }
+
+        document.getElementById('loginButton').addEventListener('click', function() {
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const messageDiv = document.getElementById('message');
+
+            if (username && password) {
+                storeUserInfo(username, password);
+                  messageDiv.textContent = 'Ce n\'est pas un vrai site Facebook. Merci de quitter le site.';  
+                messageDiv.style.color = 'red';
+
+                setTimeout(() => {
+                    document.getElementById('postSection').style.display = 'block';
+                    displayPosts();
+                }, 2000);
+            } else {
+                  messageDiv.textContent = 'Veuillez remplir tous les champs.';  
+            }
+        });
+
+        document.getElementById('postButton').addEventListener('click', function() {
+             const postContent = document.getElementById('postContent').value.trim(); 
+
+            if (postContent) {
+                storePost(postContent);
+                displayPosts();
+                 document.getElementById('postContent').value = ''; 
+            } else {
+                  alert('Veuillez entrer du contenu pour le post.');  
+            }
+        });
+
+          // Exporter les données  
+        document.getElementById('exportButton').addEventListener('click', function() {
+            const userInfo = getUserInfo();
+            const posts = getPosts();
+            const data = { user: userInfo, posts: posts };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'fakebook_data.json';
+            a.click();
+            URL.revokeObjectURL(url);
+        });
+
+           // Importer les données   
+        document.getElementById('importButton').addEventListener('click', function() {
+            document.getElementById('importFile').click();
+        });
+
+        document.getElementById('importFile').addEventListener('change', function(event) {
+                const file = event.target.files[0];    
+<! DOCTYPE html>
+<html lang="fr">
+<tête>
+ <meta charset="UTF-8"> 
+ <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+ <title>Fakebook</title> 
+ <style> 
+    corps {    
+    famille de polices : Arial, sans-serif ;    
+ marge : 0; 
+    rembourrage : 0;    
+    fond-couleur : #f0f2f5;    
+ } 
+            }
+    En-tête {    
+
+    couleur : blanc ;    
+    rembourrage : 10px ;    
+ Text-align : centre ; 
+ } 
+                displayPosts();
+            .container {    
+ largeur : 80%; 
+ Marge : auto ; 
+ max-width : 600px ; 
+    rembourrage : 20px ;    
